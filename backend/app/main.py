@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timezone, timedelta
 from fastapi import FastAPI, Depends, HTTPException, Header, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,7 +10,18 @@ from .security import hash_password, check_password, make_token, token_user
 from sklearn.ensemble import IsolationForest
 
 app = FastAPI(title="FinSight AI API", version="1.0.0")
-app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173"], allow_methods=["*"], allow_headers=["*"])
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        os.getenv("FRONTEND_URL", ""),
+    ],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 Base.metadata.create_all(bind=engine)
 
 def seed():

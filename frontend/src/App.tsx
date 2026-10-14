@@ -1,7 +1,17 @@
 import {useEffect,useState} from 'react';
 import {Activity,ArrowUpRight,Wallet,ArrowDownLeft,Plus,LogOut,BellRing,LayoutDashboard,CreditCard,RefreshCw,Bot} from 'lucide-react';
 import {AreaChart,Area,XAxis,YAxis,Tooltip,ResponsiveContainer,CartesianGrid,PieChart,Pie,Cell} from 'recharts';
-const API='http://127.0.0.1:8000';const money=(n:number)=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n);
+const API = (
+  import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'
+).replace(/\/$/, '');
+
+const money = (value: number) =>
+  new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(value);
+
+
 type Tx={id:number;description:string;category:string;kind:'income'|'expense';amount:number;date:string};
 type Summary={total_income:number;total_expenses:number;net_cash_flow:number;transaction_count:number;category_breakdown:{category:string;amount:number}[];monthly_trend:{month:string;income:number;expenses:number}[]};
 async function call(path:string,token:string,options:RequestInit={}){const r=await fetch(API+path,{...options,headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{}),...(options.headers||{})}});const b=await r.json();if(!r.ok)throw Error(b.detail||'Request failed');return b}
